@@ -39,11 +39,172 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
-  const express = require('express');
-  const bodyParser = require('body-parser');
-  
-  const app = express();
-  
-  app.use(bodyParser.json());
-  
-  module.exports = app;
+
+const express = require('express');
+const fs = require('fs');
+const bodyParser = require('body-parser');
+const e = require('express');
+const path = require('path');
+const port = 3000;
+
+function findIndex(arr, id) {
+  if (arr.length == 0) {
+    return undefined;
+  }
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i].id == id) {
+      return arr[i];
+    }
+  }
+  return undefined;
+}
+
+
+// console.log(findIndex([{ id: 1 }, { id: 2 }], 3))
+
+const app = express();
+
+// app.listen(port,() => {
+//   console.log("Server is running at localhost:3000");
+// })
+
+
+app.get('/', (req, res) => {
+  res.send('Hello, World!');
+});
+
+
+app.use(bodyParser.json());
+
+app.get('/todos', (req, res) => {
+  fs.readFile(path.join(__dirname, '/todos.json'), (err, data) => {
+    if (err) {
+      return res.status(404).send('File Not Found');
+    }
+    else {
+      return res.status(200).json(JSON.parse(data));
+    }
+  })
+})
+
+app.get('/todos/:id', (req, res) => {
+  fs.readFile(path.join(__dirname, '/todos.json'), (err, data) => {
+    if (err) {
+      return res.status(404).send('File Not Found');
+    }
+    else {
+      const todos = JSON.parse(data);
+      const id = req.params.id;
+      const out = findIndex(todos, id);
+      if (out === undefined) {
+        return res.status(404).send('todo not found');
+      }
+      else {
+        return res.status(200).send(out);
+      }
+    }
+  })
+})
+
+app.post('/todos', (req, res) => {
+
+  const todo = {
+    id: Math.floor(Math.random() * 10000),
+    title: req.body.title,
+    description: req.body.description
+  }
+
+  fs.readFile(path.join(__dirname, '/todos.json'), (err, data) => {
+    if (err) {
+      return res.status(404).send('File Not Found');
+    }
+    else {
+      const todos = JSON.parse(data);
+      todos.push(todo);
+
+      fs.writeFile(path.join(__dirname, '/todos.json'), JSON.stringify(todos), (err, data) => {
+        if (err) {
+          return res.status(404).send('File Not Found');
+        }
+        else {
+          return res.status(201).json(todo);
+        }
+      })
+    }
+  })
+})
+
+app.put('/todos/:id', (req, res) => {
+  fs.readFile(path.join(__dirname, '/todos.json'), (err, data) => {
+    if (err) {
+      return res.status(404).send('File Not Found');
+    }
+    else {
+      const todos = JSON.parse(data);
+      const id = req.params.id;
+      const body = req.body;
+
+      let out = findIndex(todos, id);
+
+      if (out == undefined) {
+        return res.status(404).send('todo not found');
+      }
+      else {
+
+        const newtodos = todos.map((todo) => {
+          if (todo.id == out.id) {
+            // console.log(body);
+            // console.log(out);
+            out = { ...out, ...body };
+            // console.log(out);
+            return out;
+          }
+          return todo;
+        })
+
+        fs.writeFile(path.join(__dirname, '/todos.json'), JSON.stringify(newtodos), (err, data) => {
+          if (err) {
+            return res.status(404).send('File Not Found');
+          }
+          else {
+            return res.status(200).json(out);
+          }
+        })
+      }
+    }
+  })
+})
+
+
+app.delete('/todos/:id', (req, res) => {
+  fs.readFile(path.join(__dirname, '/todos.json'), (err, data) => {
+    if (err) {
+      return res.status(404).send('File Not Found');
+    }
+    else {
+      const todos = JSON.parse(data);
+      const id = req.params.id;
+      const out = findIndex(todos, id);
+
+      if (out == undefined) {
+        return res.status(404).send('todo not found');
+      }
+      else {
+
+        const newtodos = todos.filter((todo) => todo.id != id)
+
+        fs.writeFile(path.join(__dirname, '/todos.json'), JSON.stringify(newtodos), (err, data) => {
+          if (err) {
+            return res.status(404).send('File Not Found');
+          }
+          else {
+            return res.status(200).json(out);
+          }
+        })
+      }
+    }
+  })
+})
+
+
+module.exports = app;
