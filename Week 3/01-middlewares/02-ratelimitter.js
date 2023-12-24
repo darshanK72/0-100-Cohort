@@ -16,6 +16,25 @@ setInterval(() => {
     numberOfRequestsForUser = {};
 }, 1000)
 
+const requestCounter = (req,res,next) =>{
+  const userId = req.headers["user-id"];
+  if(numberOfRequestsForUser[userId]){
+    numberOfRequestsForUser[userId]++;
+    if(numberOfRequestsForUser[userId] > 5){
+      return res.status(404).send("Maximum request achived");
+    }
+    else{
+      next();
+    }
+  }
+  else{
+    numberOfRequestsForUser[userId] = 1;
+    next();
+  }
+}
+
+app.use(requestCounter);
+
 app.get('/user', function(req, res) {
   res.status(200).json({ name: 'john' });
 });
