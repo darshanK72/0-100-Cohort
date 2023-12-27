@@ -5,8 +5,8 @@ const router = Router();
 
 // Admin Routes
 router.post('/signup', async (req, res) => {
-    const username = req.headers["username"];
-    const password = req.headers["password"];
+    const username = req.body.username;
+    const password = req.body.password;
     const user = await Admin.create({
         username,
         password
