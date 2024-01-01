@@ -1,9 +1,7 @@
 const mongoose = require('mongoose');
-
-
 mongoose.connect('mongodb+srv://rootuser:darshan%40123@cluster0.unypygq.mongodb.net/udemy')
     .then((conn) => {
-        console.log("Mongodb Connected" ,conn);
+        console.log("Mongodb Connected");
     });
 
 const AdminSchema = new mongoose.Schema({
@@ -13,7 +11,13 @@ const AdminSchema = new mongoose.Schema({
 
 const UserSchema = new mongoose.Schema({
     username: String,
-    password: String
+    password: String,
+    purchasedCourses: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Course'
+        }
+    ]
 });
 
 const CourseSchema = new mongoose.Schema({

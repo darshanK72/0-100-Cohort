@@ -8,6 +8,7 @@ async function adminMiddleware(req, res, next) {
     const user = await Admin.findOne({ username, password });
 
     if (user) {
+        req.user = user;
         next();
     }
 }

@@ -1,24 +1,65 @@
 const { Router } = require("express");
+const jwt = require("jsonwebtoken");
+const {User,Course} = require("../db/index.js");
 const router = Router();
 const userMiddleware = require("../middleware/user");
 
 // User Routes
-app.post('/signup', (req, res) => {
-    // Implement user signup logic
+router.post('/signup', async (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+    const user = await User.create({
+        username,
+        password
+    })
+    res.json({ message: 'User created successfully' });
 });
 
-app.post('/signin', (req, res) => {
-    // Implement admin signup logic
+router.post('/signin', async (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+    const user = await User.findOne({
+        username,
+        password
+    })
+    const token = jwt.sign({username,password},"mysecret");
+    if(user){
+        res.json({token:token})
+    }
 });
 
-app.get('/courses', (req, res) => {
-    // Implement listing all courses logic
+router.get('/courses', userMiddleware, async (req, res) => {
+    const courses = await Course.find();
+    res.json({ courses: courses });
 });
 
-app.post('/courses/:courseId', userMiddleware, (req, res) => {
-    // Implement course purchase logic
+router.post('/courses/:courseId', userMiddleware, async (req, res) => {
+    const user = req.user;
+
+    const courseId = req.params["courseId"];
+
+    const updatedUser = await User.findOneAndUpdate(
+        { username:user.username },
+        { "$push": { purchasedCourses: courseId } },
+        { new: true }
+    );
+
+    res.json({ message: 'Course purchased successfully' })
 });
 
-app.get('/purchasedCourses', userMiddleware, (req, res) => {
-    // Implement fetching purchased courses logic
+router.get('/purchasedCourses', userMiddleware, async (req, res) => {
+
+    const user = req.user;
+    
+    const courses = await Course.find({
+        _id: {
+            "$in": user.purchasedCourses
+        }
+    });
+
+    res.json({
+        courses: courses
+    })
 });
+
+module.exports = router;
