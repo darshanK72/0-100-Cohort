@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function CardForm({formHandler,details}) {
+function CardForm({ formHandler, details }) {
   const [cardDetails, setCardDetails] = useState({
     firstName: details.firstName,
     lastName: details.lastName,
@@ -11,17 +11,14 @@ function CardForm({formHandler,details}) {
     setCardDetails({ ...cardDetails, ...newDetails });
   }
 
-  function submitEventHandler(event){
+  function submitEventHandler(event) {
     event.preventDefault();
-    formHandler(cardDetails)
+    formHandler(cardDetails);
   }
 
   return (
     <>
-      <form
-        className="card-form p-2"
-        onSubmit={submitEventHandler}
-      >
+      <form className="card-form p-2" onSubmit={submitEventHandler}>
         <div className="input-item mb-3">
           <label htmlFor="firstName" className="form-label">
             First Name
@@ -58,7 +55,9 @@ function CardForm({formHandler,details}) {
           />
         </div>
         <div className="input-item mb-3">
-          <button type="submit" className="btn btn-primary">Submit</button>
+          <button type="submit" className="btn btn-primary">
+            Submit
+          </button>
         </div>
       </form>
     </>

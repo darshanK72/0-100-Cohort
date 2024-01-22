@@ -1,8 +1,4 @@
-# React + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## React hook assignments
+You will find a bunch of folders this week, each with some set of assignments for a specific hook
+Go to the folder (for example 1-use-memo) and comment out the Assignment component you are working on (Assignment1/Assignment2...) and try to solve it
+There are no tests, but solution videos will be provided

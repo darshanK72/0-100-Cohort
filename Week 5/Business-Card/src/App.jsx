@@ -5,12 +5,13 @@ import "../node_modules/bootstrap/dist/js/bootstrap.bundle.js";
 import "./App.css";
 import Card from "./Components/Card";
 import CardForm from "./Components/CardForm";
+// import BusinessCard from './Components/BusinessCard';
 
 function App() {
   const [cardDetails, setCardDetails] = useState({
-    firstName:"Darshan",
-    lastName:"Khairnar",
-    address:"Anand Nagar, Soygaon, Malegaon"
+    firstName: "Darshan",
+    lastName: "Khairnar",
+    address: "Anand Nagar, Soygaon, Malegaon",
   });
 
   const formSubmitCallback = useCallback((cardDetails) => {
@@ -30,12 +31,13 @@ function App() {
             </div>
           </div>
           <div className="col-6">
-          <div className="card-box">
+            <div className="card-box">
               <Card cardDetails={cardDetails} />
             </div>
           </div>
         </div>
       </div>
+      {/* <BusinessCard/> */}
     </>
   );
 }
